@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Descobrir a Senha</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-image: url('Lazers.jpg');
+            background-size: cover;
+            color: white;
+        }
+        #resultado, #temporizador {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #000000;
+            background-color: firebrick;
+            width: 200px;
+            margin: 10px auto;
+        }
+        #numerosAcertados {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: rgb(2, 87, 2);
+            background-color: rgb(22, 185, 22);
+            width: 250px;
+            margin: 10px auto;
+        }
+
+        h1{
+    background-color: black;
+    width: 600px;
+            margin: 10px auto;
+}
+    </style>
+</head>
+<body>
+    <h1>DESCUBRA A SENHA DO COFRE!</h1>
+    <p>Digite um número entre 0 e 9 para descobrir a senha:</p>
+    <input type="number" id="chute" placeholder="Digite seu palpite" min="0" max="9">
+    <button onclick="verificarSenha()">Tentar</button>
+
+    <div id="temporizador">Tempo restante: 30 segundos</div>
+    <div id="resultado"></div>
+    <div id="numerosAcertados">Senha do Cofre: </div>
+
+    <script>
+        const senha = [
+            Math.floor(Math.random() * 10),
+            Math.floor(Math.random() * 10),
+            Math.floor(Math.random() * 10)
+        ];
+        let posicaoAtual = 0;
+        let tempoRestante = 30; 
+        let intervalo;
+
+        function iniciarTemporizador() {
+            intervalo = setInterval(() => {
+                tempoRestante--;
+                document.getElementById('temporizador').textContent = `Tempo restante: ${tempoRestante} segundos`;
+
+                if (tempoRestante <= 0) {
+                    clearInterval(intervalo);
+                    document.getElementById('resultado').textContent = "Tempo esgotado! Você perdeu!";
+                    document.getElementById('resultado').style.color = "red";
+                    document.getElementById('chute').disabled = true;
+                }
+            }, 1000);
+        }
+
+        function verificarSenha() {
+            const chute = parseInt(document.getElementById('chute').value);
+            const resultado = document.getElementById('resultado');
+            const numerosAcertados = document.getElementById('numerosAcertados');
+
+            if (tempoRestante > 0) {
+                if (chute === senha[posicaoAtual]) {
+                    resultado.textContent = `Correto! Descubra o ${posicaoAtual + 2}º número da senha.`;
+                    resultado.style.color = "green";
+                    
+                    // Adicionar o número acertado ao display
+                    numerosAcertados.textContent += ` ${chute}`;
+                    
+                    posicaoAtual++;
+
+                    if (posicaoAtual === senha.length) {
+                        clearInterval(intervalo);
+                        resultado.textContent = "Parabéns! Você descobriu a senha completa do cofre!";
+                        resultado.style.color = "wellow";
+                    }
+                } else if (chute < senha[posicaoAtual]) {
+                    resultado.textContent = `Errado! O ${posicaoAtual + 1}º número é maior.`;
+                    resultado.style.color = "orange";
+                } else {
+                    resultado.textContent = `Errado! O ${posicaoAtual + 1}º número é menor.`;
+                    resultado.style.color = "orange";
+                }
+            }
+
+            document.getElementById('chute').value = ''; 
+        }
+
+        window.onload = iniciarTemporizador;
+    </script>
+</body>
+</html>
